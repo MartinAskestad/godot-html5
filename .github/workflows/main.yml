@@ -33,12 +33,10 @@ jobs:
             relative_project_path: ./
             create_release: false
             use_preset_export_path: true
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Publish game to github pages
         uses: tsunematsu21/actions-publish-gh-pages@v1.0.2
         with:
             dir: ./dist
             branch: gh-pages
-            token: ${{ secrets.GITHUB_TOKEN }}
+            token: ${{ secrets.ACCESS_TOKEN }}
