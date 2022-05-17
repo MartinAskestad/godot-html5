@@ -36,6 +36,6 @@ jobs:
       - name: Publish game to github pages
         uses: tsunematsu21/actions-publish-gh-pages@v1.0.2
         with:
-            dir: dist
+            dir: HTML5
             branch: gh-pages
             token: ${{ secrets.GITHUB_TOKEN }}
