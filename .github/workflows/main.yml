@@ -31,12 +31,13 @@ jobs:
             godot_executable_download_url: http://downloads.tuxfamily.org/godotengine/3.4.2/Godot_v3.4.2-stable_linux_headless.64.zip
             godot_export_templates_download_url: http://downloads.tuxfamily.org/godotengine/3.4.2/Godot_v3.4.2-stable_export_templates.tpz
             relative_project_path: ./
+            create_release: false
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Publish game to github pages
         uses: tsunematsu21/actions-publish-gh-pages@v1.0.2
         with:
-            dir: ./HTML5
+            dir: ./builds/HTML5
             branch: gh-pages
             token: ${{ secrets.GITHUB_TOKEN }}
