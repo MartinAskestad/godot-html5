@@ -10,14 +10,6 @@ on:
   pull_request:
     branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -25,11 +17,8 @@ concurrency:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build-and-deploy-godot-game:
+  build-godot:
     # The type of runner that the job will run on
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy-to-pages.output.page_url }}
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -49,6 +38,16 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: './dist/HTML5'
+  deploy-to-pages:
+    runs-on: ubuntu-latest
+    needs: build-godot
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-to-pages.output.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
       - name: Deploy to GitHub Pages
         id: deploy-to-pages
         uses: actions/deploy-pages@v1
