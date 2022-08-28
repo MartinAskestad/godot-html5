@@ -6,26 +6,36 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ $default-branch ]
   pull_request:
-    branches: [ master ]
+    branches: [ $default-branch ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cance-in-progress: true
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-and-deploy-godot-game:
     # The type of runner that the job will run on
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-to-pages.output.page_url }}
     runs-on: ubuntu-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      - name: exportGame
+      - name: Export godot game as html5
         uses: firebelley/godot-export@v3.0.0
         with:
             godot_executable_download_url: http://downloads.tuxfamily.org/godotengine/3.4.2/Godot_v3.4.2-stable_linux_headless.64.zip
@@ -33,10 +43,12 @@ jobs:
             relative_project_path: ./
             create_release: false
             use_preset_export_path: true
-      
-      - name: Publish game to github pages
-        uses: tsunematsu21/actions-publish-gh-pages@v1.0.2
+      - name: Setup pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-            dir: ./dist/HTML5
-            branch: gh-pages
-            token: ${{ secrets.ACCESS_TOKEN }}
+          path: './dist/HTML5'
+      - name: Deploy to GitHub Pages
+        id: deploy-to-pages
+        uses: actions/deploy-pages@v1
